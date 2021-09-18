@@ -8,7 +8,12 @@ function sendErrorResponse(res, err) {
         msg: err
     })
 }
-
+function sentRegistrationErrorResponse(res,err) {
+   res.status(400).send(" Sorry  but  user with such mail is already exist.. Enter another email")
+}
+function sendLoginErrorResponse(res,err) {
+      return res.status(401).send("Unauthorized! There is no such user.. please register your account")
+}
 
 class UserController {
     async registration(req, res, next) {
@@ -22,7 +27,7 @@ class UserController {
             res.cookie('refreshToken', userData.refreshToken, {maxAge: MONTH_IN_MS, httpOnly: true});
             return res.json(userData);
         } catch (err) {
-            sendErrorResponse(res, err)
+            sentRegistrationErrorResponse(res, err)
         }
     }
 
@@ -34,7 +39,7 @@ class UserController {
             res.cookie('refreshToken', userData.refreshToken, {maxAge: MONTH_IN_MS, httpOnly: true});
             return res.json(userData);
         } catch (err) {
-            sendErrorResponse(res,err)
+            sendLoginErrorResponse(res,err)
         }
 
     }
@@ -55,7 +60,6 @@ class UserController {
             const {refreshToken} = req.cookies;
             const userData = await userService.refresh(refreshToken);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: MONTH_IN_MS, httpOnly: true});
-
             return res.json(userData);
 
         } catch (err){
@@ -113,7 +117,7 @@ class UserController {
         try {
             console.log(req.file);
            if(req.file){
-               res.json(req.file)
+               res.json({path:req.file.filename})
            }
 
         } catch (err) {

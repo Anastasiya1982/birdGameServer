@@ -22,7 +22,7 @@ router.get('/refresh', userController.refresh);
 router.get('/users', authMiddleware, userController.getUsers);
 router.get('/:id',userController.getOneUser);
 router.get('/:id/edit',userController.editUser);
-router.put('/',authMiddleware, userController.updateUser);
+router.put('/update',authMiddleware, userController.updateUser);
 router.post('/upload', fileMiddleware.single('avatar'), userController.uploadAvatar);
 
 module.exports = router;

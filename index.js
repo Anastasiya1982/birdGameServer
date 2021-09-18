@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use('/api', router);
 app.use(errorMiddleware);
 app.use(methodOverride('_method'));
-app.use( express.static(path.join(`${__dirname}/images`)));
+app.use( "images", express.static(path.join(`${__dirname}/images`)));
 
 
 
