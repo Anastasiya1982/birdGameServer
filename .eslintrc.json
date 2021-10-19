@@ -5,12 +5,7 @@
         "es6": true,
         "node": true
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "airbnb",
-        "prettier"
-    ],
+    "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb", "prettier"],
     "parserOptions": {
         "ecmaFeatures": {
             "experimentalObjectRestSpread": true,
@@ -18,10 +13,7 @@
         },
         "sourceType": "module"
     },
-    "plugins": [
-        "react",
-        "babel"
-    ],
+    "plugins": ["react", "babel"],
     "rules": {
         "max-len": [
             "error",
@@ -29,15 +21,9 @@
                 "code": 100
             }
         ],
-        "prefer-promise-reject-errors": [
-            "off"
-        ],
-        "react/jsx-filename-extension": [
-            "off"
-        ],
-        "no-return-assign": [
-            "off"
-        ],
+        "prefer-promise-reject-errors": ["off"],
+        "react/jsx-filename-extension": ["off"],
+        "no-return-assign": ["off"],
         "react/prop-types": 0,
         "indent": "off",
         "no-tabs": 0,

@@ -1,25 +1,22 @@
-const multer=require('multer');
+const multer = require("multer");
 
-const storage=multer.diskStorage({
-    destination(req,file,cb){
-        cb(null,"images");
+const storage = multer.diskStorage({
+    destination(req, file, cb) {
+        cb(null, "images");
     },
     filename(req, file, callback) {
-        callback(null, new Date().toISOString()+ '-' + file.originalname);
-    }
-})
+        callback(null, new Date().toISOString() + "-" + file.originalname);
+    },
+});
 
-const types=['image/png','image/jpeg','image/jpg']
+const types = ["image/png", "image/jpeg", "image/jpg"];
 
-const fileFilter=(req,file,cb)=>{
-    if(types.includes(file.mimetype)){
-        cb(null,true)
-    }
-    else{
-        cb(null,false)
+const fileFilter = (req, file, cb) => {
+    if (types.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(null, false);
     }
 };
 
-
-module.exports=multer({storage,fileFilter});
-
+module.exports = multer({ storage, fileFilter });
