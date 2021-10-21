@@ -1,7 +1,6 @@
-const ApiError = require("../api-error");
+const ApiError = import("../api-error.js");
 
-module.exports = function (err, req, res, next) {
-    console.log(err);
+export const errorMiddleware = (err, req, res, next) => {
     if (err instanceof ApiError) {
         return res.status(err.status).json({ message: err.message, errors: err.errors });
     }

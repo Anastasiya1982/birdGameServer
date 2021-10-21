@@ -1,16 +1,17 @@
-const UserModel = require("../models/user-model");
-const bcrypt = require("bcrypt");
-const uuid = require("uuid");
-const mailService = require("./mail-service");
-const tokenService = require("../service/token-service");
-const UserDto = require("../dto/user-dto");
-const ApiError = require("../api-error");
+import bcrypt from "bcrypt";
+import * as uuid from "uuid";
+
+import UserModel from "../models/user-model.js";
+import mailService from "./mail-service.js";
+import tokenService from "../service/token-service.js";
+import UserDto from "../dto/user-dto.js";
+import ApiError from "../api-error.js";
 
 class UserService {
     async registration(name, email, password) {
         const candidate = await UserModel.findOne({ email });
         if (candidate) {
-            throw ApiError.BadRequest(`The user with email ${email} is already exist`);
+            throw ApiError.BadRequest(`The user with email ${email} is already exist. Try to  enter another mail`);
         }
         const activationLink = uuid.v4();
         const salt = await bcrypt.genSalt(10);
@@ -18,7 +19,7 @@ class UserService {
 
         const user = await UserModel.create({ name: name, email, password: hashPassword, activationLink });
         await mailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
-        const userDto = new UserDto(user); // id, email, isActivated
+        const userDto = UserDto(user); 
         const tokens = tokenService.generateTokens({ ...userDto });
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
         return { ...tokens, user: userDto };
@@ -37,13 +38,11 @@ class UserService {
         }
     }
 
-    async login(email, password) {
+    async login(email) {
         const user = await UserModel.findOne({ email });
         if (!user) {
-            console.log("no user find");
             throw ApiError.BadRequest("the user was not found");
         }
-
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({ ...userDto });
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
@@ -67,7 +66,6 @@ class UserService {
         const user = await UserModel.findById(userData.id);
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({ ...userDto });
-
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
         return { ...tokens, user: userDto };
     }
@@ -90,21 +88,20 @@ class UserService {
                     password: hashPassword,
                 };
             }
-            const option = { new: true }; //will return updated document
+            const option = { new: true }; 
 
             const user = await UserModel.findByIdAndUpdate(id, update, option);
             if (!user) {
                 throw ApiError.BadRequest("the user was not found");
             }
-            const userDto = new UserDto(user); // id, email, isActivated,password
+            const userDto = new UserDto(user); 
             const tokens = tokenService.generateTokens({ ...userDto });
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
             return { ...tokens, user: userDto };
-            console.log(`Update user with ${id},name:${name},email: ${email} and password:${password}`);
         } catch (e) {
             throw ApiError.BadRequest("the user is not updated");
         }
     }
 }
 
-module.exports = new UserService();
+export default new UserService();

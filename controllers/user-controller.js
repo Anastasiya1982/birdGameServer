@@ -1,26 +1,27 @@
-const userService = require("../service/user-service");
-const { validationResult } = require("express-validator");
-const ApiError = require("../api-error");
+import { validationResult } from "express-validator";
+
+import userService from "../service/user-service.js";
+import apiError from "../api-error.js";
 const MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
 
-function sendErrorResponse(res, err) {
+export function sendErrorResponse(res, err) {
     return res.status(400).send({
         msg: err,
     });
 }
-function sentRegistrationErrorResponse(res, err) {
+export function sentRegistrationErrorResponse(res, err) {
     res.status(400).send(" Sorry  but  user with such mail is already exist.. Enter another email");
 }
-function sendLoginErrorResponse(res, err) {
+
+export function sendLoginErrorResponse(res, err) {
     return res.status(401).send("Unauthorized! There is no such user.. please register your account");
 }
-
 class UserController {
     async registration(req, res, next) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next(ApiError.BadRequest("Validation error", errors.array()));
+                return next(apiError.BadRequest("Validation error", errors.array()));
             }
             const { name, email, password } = req.body;
             const userData = await userService.registration(name, email, password);
@@ -34,7 +35,7 @@ class UserController {
     async login(req, res) {
         try {
             const { email, password } = req.body;
-            const userData = await userService.login(email, password);
+            const userData = await userService.login(email, password);           
             res.cookie("refreshToken", userData.refreshToken, { maxAge: MONTH_IN_MS, httpOnly: true });
             return res.json(userData);
         } catch (err) {
@@ -110,8 +111,7 @@ class UserController {
     }
 
     async uploadAvatar(req, res) {
-        try {
-            console.log(req.file);
+        try {            
             if (req.file) {
                 res.json({ path: req.file.filename });
             }
@@ -121,4 +121,4 @@ class UserController {
     }
 }
 
-module.exports = new UserController();
+export default new UserController();

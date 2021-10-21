@@ -1,11 +1,11 @@
-const multer = require("multer");
+import express from "express";
+import { body } from "express-validator";
 
-const Router = require("express").Router;
-const userController = require("../controllers/user-controller");
-const { body } = require("express-validator");
-const router = new Router();
-const authMiddleware = require("../middlewares/auth-middleware");
-const fileMiddleware = require("../middlewares/multer-middleware");
+import authMiddleware from "../middlewares/auth-middleware.js";
+import fileMiddleware from "../middlewares/multer-middleware.js";
+import userController from "../controllers/user-controller.js";
+
+const router = express.Router();
 
 router.post(
     "/registration",
@@ -24,4 +24,4 @@ router.get("/:id/edit", userController.editUser);
 router.put("/update", authMiddleware, userController.updateUser);
 router.post("/upload", fileMiddleware.single("avatar"), userController.uploadAvatar);
 
-module.exports = router;
+export default router;

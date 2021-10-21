@@ -1,17 +1,24 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const mongoose = require("mongoose");
-const router = require("./router/index");
-const errorMiddleware = require("./middlewares/error-middleware");
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import mongoose from "mongoose";
+import * as path from "path";
+import methodOverride from "method-override";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+import router from "./router/index.js";
+import { errorMiddleware } from "./middlewares/error-middleware.js";
+
 dotenv.config();
-const methodOverride = require("method-override");
-const path = require("path");
+
 const port = process.env.PORT || 5000;
 const app = express();
 
-mongoose.set("useFindAndModify", false);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 app.use(
     cors({
         credentials: true,
@@ -23,7 +30,7 @@ app.use(cookieParser());
 app.use("/api", router);
 app.use(errorMiddleware);
 app.use(methodOverride("_method"));
-app.use("images", express.static(path.join(`${__dirname}/images`)));
+app.use("images", express.static(path.join(__dirname)));
 
 const start = async () => {
     try {
@@ -38,5 +45,6 @@ const start = async () => {
         console.log(e);
     }
 };
+//mongoose.set("useFindAndModify", false);
 
 start();
